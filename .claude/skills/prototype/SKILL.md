@@ -157,7 +157,6 @@ prompt.md에 정의된 블록 기준으로 생성할 모드를 결정합니다.
    - `projectId`: 위에서 확인한 ID
    - `prompt`: prompt.md의 해당 모드 프롬프트 전체
    - `deviceType`: 위에서 결정한 값
-   - `modelId`: `GEMINI_3_PRO`
 2. `get_screen`으로 `htmlCode.downloadUrl`, `screenshot.downloadUrl`을 획득합니다.
 3. `curl -L -o`로 HTML과 PNG를 다운로드합니다.
 
@@ -228,7 +227,6 @@ mode: <light | dark | light+dark>
    - `projectId`: stitch.json의 ID
    - `prompt`: `screens/<screen-id>/prompt.md`의 해당 모드 프롬프트
    - `deviceType`: 위에서 결정한 값
-   - `modelId`: `GEMINI_3_PRO`
 2. `get_screen`으로 다운로드 URL 획득
 3. `curl -L -o`로 다운로드
 

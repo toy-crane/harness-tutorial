@@ -113,6 +113,19 @@ Examples:
 - "Warm Cream (#faf5f0) for page background"
 - "Soft Gray (#6b7280) for secondary text"
 
+#### E. Add Scope Constraint
+
+After completing the Page Structure, always append a **Scope Constraint** block at the end of the prompt. This prevents Stitch from adding UI elements not explicitly specified in the prompt.
+
+```markdown
+**Scope Constraint:**
+- ONLY render elements explicitly described in the Page Structure above
+- Do NOT add any UI elements, icons, or sections not specified above
+- If a component's internal structure is not described, render it in its simplest form
+```
+
+This block is mandatory for every prompt. Feature-specific constraints can be added as extra items in this block.
+
 ### Step 4: Format the Output
 
 Structure the enhanced prompt in this order:
@@ -132,6 +145,11 @@ Structure the enhanced prompt in this order:
 1. **[Section]:** [Description]
 2. **[Section]:** [Description]
 ...
+
+**Scope Constraint:**
+- ONLY render elements explicitly described in the Page Structure above
+- Do NOT add any UI elements, icons, or sections not specified above
+- If a component's internal structure is not described, render it in its simplest form
 ```
 
 ## Output Options
