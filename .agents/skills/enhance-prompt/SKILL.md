@@ -91,6 +91,13 @@ Add descriptive adjectives to set the mood:
 
 #### C. Structure the Page
 
+입력에 **WIREFRAME CONTEXT** 블록이 포함되어 있으면:
+- ASCII Layout과 Components를 분석하여 Page Structure를 도출한다
+- 구조를 새로 추측하지 않고 와이어프레임의 컴포넌트 배치를 기초로 사용한다
+- Component Inventory의 Type을 UI/UX 키워드로 변환한다
+
+WIREFRAME CONTEXT가 없으면 아래 기존 방식대로 수행한다.
+
 Organize content into numbered sections:
 
 ```markdown
