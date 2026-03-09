@@ -26,6 +26,11 @@
       "sourceType": "github",
       "computedHash": "dadbca54d35a33fe73e40018611af2179689305bf6da812ab2643987fefd9da3"
     },
+    "skill-creator": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "b122f4d1e91aa1d83027e050b5b37c3156203ee85458d7b1360bc48167c9e02a"
+    },
     "stitch-loop": {
       "source": "google-labs-code/stitch-skills",
       "sourceType": "github",
