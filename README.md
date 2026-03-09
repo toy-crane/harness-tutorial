@@ -12,8 +12,8 @@ Next.js 16 + React 19 프로젝트 템플릿
 ## 시작하기
 
 ```bash
-npm install
-npm run dev
+bun install
+bun dev
 ```
 
 [http://localhost:3000](http://localhost:3000)에서 결과를 확인할 수 있습니다.
@@ -22,12 +22,12 @@ npm run dev
 
 | 명령어 | 설명 |
 |---|---|
-| `npm run dev` | 개발 서버 실행 |
-| `npm run build` | 프로덕션 빌드 |
-| `npm run start` | 프로덕션 서버 실행 |
-| `npm run lint` | ESLint 실행 |
-| `npm test` | 테스트 실행 |
-| `npm run test:watch` | 테스트 워치 모드 |
+| `bun dev` | 개발 서버 실행 |
+| `bun run build` | 프로덕션 빌드 |
+| `bun start` | 프로덕션 서버 실행 |
+| `bun lint` | ESLint 실행 |
+| `bun test` | 테스트 실행 |
+| `bun run test:watch` | 테스트 워치 모드 |
 
 ## Claude Code 워크플로우
 
