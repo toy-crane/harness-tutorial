@@ -29,6 +29,16 @@ bun dev
 | `bun test` | 테스트 실행 |
 | `bun run test:watch` | 테스트 워치 모드 |
 
+## Hooks
+
+Claude Code hooks 기반 3단계 자동 품질 게이트 (`.claude/settings.json`)
+
+| 단계 | 트리거 | 동작 |
+|---|---|---|
+| **PreToolUse** | `Write\|Edit` | `guard-spec-tests.sh` — 기존 spec 테스트 수정 시 승인 요구 |
+| **PostToolUse** | `Write\|Edit` | ESLint auto-fix + `auto-test.sh` — 관련 테스트 자동 실행 |
+| **Stop** | 작업 완료 시 | `final-test-gate.sh` — 전체 테스트 실행, 실패 시 중단 |
+
 ## Claude Code 워크플로우
 
 이 프로젝트는 `/spec` → `/wireframe` → `Plan Mode` → `Implementation` 순서로 개발합니다.
