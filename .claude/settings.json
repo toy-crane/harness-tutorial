@@ -1,5 +1,17 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$(git rev-parse --show-toplevel)\"/.claude/hooks/guard-spec-tests.sh",
+            "statusMessage": "spec 테스트 보호 검사 중..."
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
@@ -7,19 +19,24 @@
           {
             "type": "command",
             "command": "jq -r '.tool_input.file_path' | xargs bunx eslint --fix"
+          },
+          {
+            "type": "command",
+            "command": "\"$(git rev-parse --show-toplevel)\"/.claude/hooks/auto-test.sh",
+            "timeout": 120,
+            "statusMessage": "관련 테스트 실행 중..."
           }
         ]
       }
     ],
-    "PreToolUse": [
+    "Stop": [
       {
-        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/filter-test-output.sh",
-            "timeout": 600,
-            "statusMessage": "테스트 출력 필터링 중..."
+            "command": "\"$(git rev-parse --show-toplevel)\"/.claude/hooks/final-test-gate.sh",
+            "timeout": 120,
+            "statusMessage": "최종 테스트 게이트 실행 중..."
           }
         ]
       }
