@@ -10,6 +10,9 @@ cd "$(git rev-parse --show-toplevel)" || exit 0
 # 변경된 파일이 없으면 테스트 스킵
 git diff --quiet HEAD -- ':!node_modules' ':!dist' ':!.next' 2>/dev/null && exit 0
 
+# 소스/테스트 코드 변경이 없으면 테스트 스킵 (md, yaml 등 문서만 변경된 경우)
+git diff HEAD --name-only -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.css' | grep -q . || exit 0
+
 test_output=$(bun run test 2>&1)
 test_exit_code=$?
 
