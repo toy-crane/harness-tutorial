@@ -2,9 +2,13 @@
 input=$(cat)
 stop_hook_active=$(echo "$input" | jq -r '.stop_hook_active // false')
 
+# Stop hook이 이미 한 번 block하여 재실행된 경우, 무한 루프 방지를 위해 스킵
 [[ "$stop_hook_active" == "true" ]] && exit 0
 
 cd "$(git rev-parse --show-toplevel)" || exit 0
+
+# 변경된 파일이 없으면 테스트 스킵
+git diff --quiet HEAD -- ':!node_modules' ':!dist' ':!.next' 2>/dev/null && exit 0
 
 test_output=$(bun run test 2>&1)
 test_exit_code=$?

@@ -4,6 +4,16 @@ description: Plan mode 진입 시 적용되는 계획 수립 규칙
 
 # Plan Mode 규칙
 
+## Phase 1: Gap Analysis (계획 작성 전)
+
+artifacts를 읽고, 구현에 필요하지만 아직 결정되지 않은 사항을 `AskUserQuestion`으로 질문한다.
+답변을 받은 후 계획을 작성한다.
+
+- artifacts에 이미 답이 있거나, 프로젝트에 이미 사용 중인 기술은 질문하지 않는다
+- artifacts에 명시되지 않은 구현 결정을 임의로 내리지 않는다
+
+## Phase 2: 계획 작성
+
 - `artifacts/spec.yaml`의 시나리오를 기반으로 spec 테스트 생성을 첫 번째 task로 배치한다. 선행 작업이 필요하면 사유를 명시한다.
 - 순수 로직의 구현 테스트(*.test.tsx) 작성을 구현 task에 포함한다
 - 계획 마지막에 미결정 질문 목록을 추가한다
