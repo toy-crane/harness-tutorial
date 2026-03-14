@@ -100,3 +100,39 @@ spec.md 저장 후, 시나리오를 `artifacts/spec.yaml`에 구조화하여 추
 - [ ] ID가 기존 시나리오와 충돌하지 않는가
 - [ ] 동일한 의미의 중복 시나리오가 없는가
 - [ ] examples가 1개 이상인가
+
+## 5단계: 독립 검토
+
+spec.yaml 저장 후, 독립 리뷰어로 누락 시나리오를 검증한다.
+
+### 실행
+
+1. 다음 파일을 읽는다:
+   - `agents/reviewer.md`
+   - `references/examples-guide.md`
+   - `references/spec-schema.yaml`
+
+2. Agent 도구로 서브에이전트를 생성한다. 프롬프트:
+
+   {agents/reviewer.md 전체 내용}
+
+   ## 리뷰 대상
+   - 원본 요구사항: artifacts/<feature>/spec.md
+   - spec.yaml: artifacts/spec.yaml
+   - expect 작성 기준: references/examples-guide.md
+   - 시나리오 형식: references/spec-schema.yaml
+
+3. 결과 처리:
+
+   **갭이 있는 경우:**
+   - 리뷰어가 제안한 시나리오 목록을 사용자에게 보여준다
+   - 사용자가 반영할 갭을 선택한다 (전체/일부/없음)
+   - 선택된 갭에 대해:
+     a. 기존 spec.yaml의 마지막 ID를 확인하고 이어서 ID를 부여한다
+     b. 4단계의 검증 체크리스트를 적용한다
+     c. spec.md의 시나리오 섹션에 추가한다
+     d. spec.yaml의 scenarios에 append한다
+   - 기존 시나리오는 수정하지 않는다 (추가만 가능)
+
+   **갭이 없는 경우:**
+   - "독립 검토 완료: 누락 시나리오 없음"을 보고하고 종료한다
