@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wireframe: {{FEATURE_NAME}}</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <style>
   :root {
     --w-bg: #f5f5f5;
@@ -96,7 +96,7 @@
 
   SCREEN_CONTENT 위치에 삽입:
   <div id="screen-0" class="screen">
-    <div class="screen-content max-w-6xl mx-auto p-6">
+    <div class="screen-content @container max-w-6xl mx-auto p-6">
 
       <h2 class="text-lg font-bold mb-5" style="color:var(--w-muted); border-bottom:1px solid var(--w-border); padding-bottom:8px;">
         Screen Name
