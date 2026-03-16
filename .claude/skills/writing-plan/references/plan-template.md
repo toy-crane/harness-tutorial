@@ -30,12 +30,12 @@
 
 ### Task 1: (제목)
 
-**시나리오**: FEATURE-XXX, FEATURE-YYY
-**참조 규칙**: `.claude/skills/<skill>/rules/...`
-**구현 대상**: (이 task가 완료되면 존재해야 하는 것)
-**수용 기준**:
-- [ ] (구체적 입력 → 기대 출력)
-**커밋**: `type: 메시지`
+- **시나리오**: FEATURE-XXX, FEATURE-YYY
+- **참조 규칙**: `.claude/skills/<skill>/rules/...`
+- **구현 대상**: (이 task가 완료되면 존재해야 하는 것)
+- **수용 기준**:
+  - [ ] (구체적 입력 → 기대 출력)
+- **커밋**: `type: 메시지`
 
 ---
 
