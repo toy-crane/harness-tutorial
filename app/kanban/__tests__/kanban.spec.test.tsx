@@ -20,6 +20,16 @@ function getCardsInColumn(name: string) {
   return within(column).queryAllByTestId(/^card-/);
 }
 
+/** Click the card container (opens modal), not the title span (opens inline edit) */
+async function openCardModal(user: ReturnType<typeof userEvent.setup>, cardId: string) {
+  const card = screen.getByTestId(`card-${cardId}`);
+  await user.click(card);
+}
+
+function getFirstCardId(): string {
+  return Object.keys(useKanbanStore.getState().cards)[0];
+}
+
 describe("Kanban Board Spec Tests", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -105,19 +115,16 @@ describe("Kanban Board Spec Tests", () => {
   describe("KANBAN-005: 카드 상세 모달 — 우선순위 설정", () => {
     it("모달에서 High 우선순위를 선택하면 카드에 반영된다", async () => {
       const user = userEvent.setup();
-      useKanbanStore.getState().addCard("Todo", "회의록 작성");
+      const cardId = useKanbanStore.getState().addCard("Todo", "회의록 작성");
       renderBoard();
 
-      // Open detail modal
-      const card = screen.getByText("회의록 작성");
-      await user.click(card);
+      await openCardModal(user, cardId);
 
       const modal = screen.getByRole("dialog");
-      const prioritySelect = within(modal).getByLabelText(/우선순위/i);
-      await user.click(prioritySelect);
-      await user.click(screen.getByText("High"));
+      const highButton = within(modal).getByRole("button", { name: "High" });
+      await user.click(highButton);
 
-      expect(within(modal).getByText("High")).toBeInTheDocument();
+      expect(within(modal).getByRole("button", { name: "High" })).toHaveAttribute("data-variant", "default");
     });
   });
 
@@ -125,18 +132,17 @@ describe("Kanban Board Spec Tests", () => {
   describe("KANBAN-006: 카드 상세 모달 — 태그 추가", () => {
     it("모달에서 태그를 추가하면 카드에 태그가 표시된다", async () => {
       const user = userEvent.setup();
-      useKanbanStore.getState().addCard("Todo", "회의록 작성");
+      const cardId = useKanbanStore.getState().addCard("Todo", "회의록 작성");
       renderBoard();
 
-      const card = screen.getByText("회의록 작성");
-      await user.click(card);
+      await openCardModal(user, cardId);
 
       const modal = screen.getByRole("dialog");
       const tagInput = within(modal).getByPlaceholderText(/태그/i);
       await user.type(tagInput, "긴급");
       await user.keyboard("{Enter}");
 
-      expect(within(modal).getByText("긴급")).toBeInTheDocument();
+      expect(within(modal).getByText(/긴급/)).toBeInTheDocument();
     });
   });
 
@@ -180,11 +186,10 @@ describe("Kanban Board Spec Tests", () => {
   describe("KANBAN-009: 서브태스크 추가", () => {
     it("서브태스크를 추가하면 체크리스트에 항목이 표시된다", async () => {
       const user = userEvent.setup();
-      useKanbanStore.getState().addCard("Todo", "회의록 작성");
+      const cardId = useKanbanStore.getState().addCard("Todo", "회의록 작성");
       renderBoard();
 
-      // Open detail modal
-      await user.click(screen.getByText("회의록 작성"));
+      await openCardModal(user, cardId);
 
       const modal = screen.getByRole("dialog");
       const subtaskInput = within(modal).getByPlaceholderText(/서브태스크/i);
@@ -205,7 +210,7 @@ describe("Kanban Board Spec Tests", () => {
       useKanbanStore.getState().addSubtask(cardId, "회의실 예약");
       renderBoard();
 
-      await user.click(screen.getByText("회의록 작성"));
+      await openCardModal(user, cardId);
 
       const modal = screen.getByRole("dialog");
       const checkboxes = within(modal).getAllByRole("checkbox");
@@ -421,10 +426,10 @@ describe("Kanban Board Spec Tests", () => {
   describe("KANBAN-022: 카드 상세 모달 열기", () => {
     it("카드 클릭 시 상세 모달이 열리고 제목이 표시된다", async () => {
       const user = userEvent.setup();
-      useKanbanStore.getState().addCard("Todo", "회의록 작성");
+      const cardId = useKanbanStore.getState().addCard("Todo", "회의록 작성");
       renderBoard();
 
-      await user.click(screen.getByText("회의록 작성"));
+      await openCardModal(user, cardId);
 
       const modal = screen.getByRole("dialog");
       expect(modal).toBeInTheDocument();
@@ -436,10 +441,10 @@ describe("Kanban Board Spec Tests", () => {
   describe("KANBAN-023: 카드 상세 모달 — 제목 편집", () => {
     it("모달에서 제목을 수정하면 변경이 반영된다", async () => {
       const user = userEvent.setup();
-      useKanbanStore.getState().addCard("Todo", "회의록 작성");
+      const cardId = useKanbanStore.getState().addCard("Todo", "회의록 작성");
       renderBoard();
 
-      await user.click(screen.getByText("회의록 작성"));
+      await openCardModal(user, cardId);
 
       const modal = screen.getByRole("dialog");
       const titleInput = within(modal).getByDisplayValue("회의록 작성");
@@ -455,10 +460,10 @@ describe("Kanban Board Spec Tests", () => {
   describe("KANBAN-024: 카드 상세 모달 — 설명 편집", () => {
     it("모달에서 설명을 입력하면 저장된다", async () => {
       const user = userEvent.setup();
-      useKanbanStore.getState().addCard("Todo", "회의록 작성");
+      const cardId = useKanbanStore.getState().addCard("Todo", "회의록 작성");
       renderBoard();
 
-      await user.click(screen.getByText("회의록 작성"));
+      await openCardModal(user, cardId);
 
       const modal = screen.getByRole("dialog");
       const descInput = within(modal).getByPlaceholderText(/설명/i);
@@ -476,7 +481,7 @@ describe("Kanban Board Spec Tests", () => {
       useKanbanStore.getState().addSubtask(cardId, "자료 준비");
       renderBoard();
 
-      await user.click(screen.getByText("회의록 작성"));
+      await openCardModal(user, cardId);
 
       const modal = screen.getByRole("dialog");
       expect(within(modal).getByText("자료 준비")).toBeInTheDocument();

@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { useKanbanStore } from "@/lib/store";
 import KanbanColumn from "./kanban-column";
+import CardDetailModal from "./card-detail-modal";
 
 export default function KanbanBoard() {
   const columns = useKanbanStore((s) => s.columns);
@@ -20,22 +21,33 @@ export default function KanbanBoard() {
   }, []);
 
   return (
-    <div className="flex gap-4 overflow-x-auto p-6">
-      {columnOrder.map((colId) => {
-        const column = columns[colId];
-        const columnCards = column.cardIds.map((id) => cards[id]).filter(Boolean);
-        return (
-          <KanbanColumn
-            key={colId}
-            column={column}
-            cards={columnCards}
-            onClickCardTitle={handleClickCardTitle}
-            onClickCard={handleClickCard}
-            editingCardId={editingCardId}
-            onEditComplete={() => setEditingCardId(null)}
-          />
-        );
-      })}
-    </div>
+    <>
+      <div className="flex gap-4 overflow-x-auto p-6">
+        {columnOrder.map((colId) => {
+          const column = columns[colId];
+          const columnCards = column.cardIds.map((id) => cards[id]).filter(Boolean);
+          return (
+            <KanbanColumn
+              key={colId}
+              column={column}
+              cards={columnCards}
+              onClickCardTitle={handleClickCardTitle}
+              onClickCard={handleClickCard}
+              editingCardId={editingCardId}
+              onEditComplete={() => setEditingCardId(null)}
+            />
+          );
+        })}
+      </div>
+      {selectedCardId && (
+        <CardDetailModal
+          cardId={selectedCardId}
+          open={!!selectedCardId}
+          onOpenChange={(open) => {
+            if (!open) setSelectedCardId(null);
+          }}
+        />
+      )}
+    </>
   );
 }
