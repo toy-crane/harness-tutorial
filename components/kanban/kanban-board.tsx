@@ -9,6 +9,7 @@ import CardDetailModal from "./card-detail-modal";
 import SearchBar from "./search-bar";
 import FilterBar from "./filter-bar";
 import ThemeToggle from "./theme-toggle";
+import ExportImport from "./export-import";
 
 export default function KanbanBoard() {
   const columns = useKanbanStore((s) => s.columns);
@@ -81,7 +82,10 @@ export default function KanbanBoard() {
             </div>
             <ThemeToggle />
           </div>
-          <FilterBar />
+          <div className="flex items-center justify-between">
+            <FilterBar />
+            <ExportImport />
+          </div>
         </div>
         <div className="flex gap-4 overflow-x-auto">
           {columnOrder.map((colId) => {
