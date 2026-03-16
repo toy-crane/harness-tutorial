@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { draggable, dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { Card, CardHeader, CardTitle, CardAction, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,13 +14,15 @@ import { useKanbanStore, type Card as CardType, type ColumnId, type Priority } f
 interface KanbanCardProps {
   card: CardType;
   column: ColumnId;
+  index: number;
   isEditing: boolean;
   onEdit: () => void;
   onEditEnd: () => void;
   onDelete: () => void;
+  onReorder: (cardId: string, newIndex: number) => void;
 }
 
-export function KanbanCard({ card, column, isEditing, onEdit, onEditEnd, onDelete }: KanbanCardProps) {
+export function KanbanCard({ card, column, index, isEditing, onEdit, onEditEnd, onDelete, onReorder }: KanbanCardProps) {
   const updateCard = useKanbanStore((s) => s.updateCard);
   const [title, setTitle] = useState(card.title);
   const [description, setDescription] = useState(card.description);
@@ -27,6 +30,8 @@ export function KanbanCard({ card, column, isEditing, onEdit, onEditEnd, onDelet
   const [dueDate, setDueDate] = useState(card.dueDate);
   const [titleError, setTitleError] = useState("");
   const cardRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     setTitle(card.title);
@@ -34,6 +39,35 @@ export function KanbanCard({ card, column, isEditing, onEdit, onEditEnd, onDelet
     setPriority(card.priority);
     setDueDate(card.dueDate);
   }, [card]);
+
+  useEffect(() => {
+    const el = dragRef.current;
+    if (!el || isEditing) return;
+
+    const cleanupDrag = draggable({
+      element: el,
+      getInitialData: () => ({ type: "card", cardId: card.id, columnId: column, index }),
+      onDragStart: () => setIsDragging(true),
+      onDrop: () => setIsDragging(false),
+    });
+
+    const cleanupDrop = dropTargetForElements({
+      element: el,
+      getData: () => ({ type: "card", cardId: card.id, columnId: column, index }),
+      canDrop: ({ source }) => source.data.type === "card" && source.data.cardId !== card.id,
+      onDrop: ({ source }) => {
+        const srcColumn = source.data.columnId as ColumnId;
+        if (srcColumn === column) {
+          onReorder(source.data.cardId as string, index);
+        }
+      },
+    });
+
+    return () => {
+      cleanupDrag();
+      cleanupDrop();
+    };
+  }, [card.id, column, index, isEditing, onReorder]);
 
   useEffect(() => {
     if (!isEditing) return;
@@ -65,7 +99,7 @@ export function KanbanCard({ card, column, isEditing, onEdit, onEditEnd, onDelet
 
   if (!isEditing) {
     return (
-      <Card data-testid="kanban-card" size="sm" className="cursor-pointer" onClick={onEdit}>
+      <Card ref={dragRef} data-testid="kanban-card" size="sm" className={`cursor-pointer ${isDragging ? "opacity-50" : ""}`} onClick={onEdit}>
         <CardHeader>
           <CardTitle>{card.title}</CardTitle>
           <CardAction>
