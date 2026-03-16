@@ -1,16 +1,22 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { useKanbanStore } from "@/lib/store";
+import type { Card } from "@/lib/types";
 import KanbanColumn from "./kanban-column";
 import CardDetailModal from "./card-detail-modal";
+import SearchBar from "./search-bar";
+import FilterBar from "./filter-bar";
 
 export default function KanbanBoard() {
   const columns = useKanbanStore((s) => s.columns);
   const columnOrder = useKanbanStore((s) => s.columnOrder);
   const cards = useKanbanStore((s) => s.cards);
   const moveCard = useKanbanStore((s) => s.moveCard);
+  const searchQuery = useKanbanStore((s) => s.searchQuery);
+  const priorityFilter = useKanbanStore((s) => s.priorityFilter);
+  const tagFilter = useKanbanStore((s) => s.tagFilter);
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 
@@ -26,20 +32,17 @@ export default function KanbanBoard() {
 
         if (!cardId || !toColumnId) return;
 
-        // Determine drop index
         const innerTarget = location.current.dropTargets.length > 1
           ? location.current.dropTargets[0]
           : null;
 
         let toIndex: number;
         if (innerTarget && innerTarget.data.cardId) {
-          // Dropped on a card — get its index
           const targetCardId = innerTarget.data.cardId as string;
           const targetColumnId = (innerTarget.data.columnId ?? toColumnId) as string;
           const targetColumn = useKanbanStore.getState().columns[targetColumnId];
           toIndex = targetColumn.cardIds.indexOf(targetCardId);
         } else {
-          // Dropped on column — append to end
           const targetColumn = useKanbanStore.getState().columns[toColumnId];
           toIndex = targetColumn.cardIds.length;
         }
@@ -48,6 +51,16 @@ export default function KanbanBoard() {
       },
     });
   }, [moveCard]);
+
+  const filterCard = useCallback(
+    (card: Card): boolean => {
+      if (searchQuery && !card.title.includes(searchQuery)) return false;
+      if (priorityFilter !== "All" && card.priority !== priorityFilter) return false;
+      if (tagFilter && !card.tags.includes(tagFilter)) return false;
+      return true;
+    },
+    [searchQuery, priorityFilter, tagFilter]
+  );
 
   const handleClickCardTitle = useCallback((cardId: string) => {
     setEditingCardId(cardId);
@@ -59,22 +72,31 @@ export default function KanbanBoard() {
 
   return (
     <>
-      <div className="flex gap-4 overflow-x-auto p-6">
-        {columnOrder.map((colId) => {
-          const column = columns[colId];
-          const columnCards = column.cardIds.map((id) => cards[id]).filter(Boolean);
-          return (
-            <KanbanColumn
-              key={colId}
-              column={column}
-              cards={columnCards}
-              onClickCardTitle={handleClickCardTitle}
-              onClickCard={handleClickCard}
-              editingCardId={editingCardId}
-              onEditComplete={() => setEditingCardId(null)}
-            />
-          );
-        })}
+      <div className="flex flex-col gap-4 p-6">
+        <div className="flex flex-col gap-3">
+          <SearchBar />
+          <FilterBar />
+        </div>
+        <div className="flex gap-4 overflow-x-auto">
+          {columnOrder.map((colId) => {
+            const column = columns[colId];
+            const columnCards = column.cardIds
+              .map((id) => cards[id])
+              .filter(Boolean)
+              .filter(filterCard);
+            return (
+              <KanbanColumn
+                key={colId}
+                column={column}
+                cards={columnCards}
+                onClickCardTitle={handleClickCardTitle}
+                onClickCard={handleClickCard}
+                editingCardId={editingCardId}
+                onEditComplete={() => setEditingCardId(null)}
+              />
+            );
+          })}
+        </div>
       </div>
       {selectedCardId && (
         <CardDetailModal

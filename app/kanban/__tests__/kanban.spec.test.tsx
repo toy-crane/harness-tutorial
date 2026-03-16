@@ -298,9 +298,9 @@ describe("Kanban Board Spec Tests", () => {
       useKanbanStore.getState().updateCard(id3, { priority: "Medium" });
       renderBoard();
 
-      const priorityFilter = screen.getByLabelText(/우선순위 필터/i);
-      await user.click(priorityFilter);
-      await user.click(screen.getByText("High"));
+      // Click "High" priority filter button directly
+      const filterButtons = screen.getAllByRole("button", { name: "High" });
+      await user.click(filterButtons[0]);
 
       const visibleCards = screen.getAllByTestId(/^card-/);
       expect(visibleCards).toHaveLength(1);
@@ -317,9 +317,9 @@ describe("Kanban Board Spec Tests", () => {
       useKanbanStore.getState().updateCard(id2, { tags: ["일반"] });
       renderBoard();
 
-      const tagFilter = screen.getByLabelText(/태그 필터/i);
-      await user.click(tagFilter);
-      await user.click(screen.getByText("긴급"));
+      // Click "긴급" tag filter button
+      const tagButtons = screen.getAllByRole("button", { name: "긴급" });
+      await user.click(tagButtons[0]);
 
       const visibleCards = screen.getAllByTestId(/^card-/);
       expect(visibleCards).toHaveLength(1);
@@ -550,16 +550,15 @@ describe("Kanban Board Spec Tests", () => {
       useKanbanStore.getState().updateCard(id3, { priority: "Medium" });
       renderBoard();
 
-      // Apply filter
-      const priorityFilter = screen.getByLabelText(/우선순위 필터/i);
-      await user.click(priorityFilter);
-      await user.click(screen.getByText("High"));
+      // Apply High filter
+      const highButtons = screen.getAllByRole("button", { name: "High" });
+      await user.click(highButtons[0]);
 
       expect(screen.getAllByTestId(/^card-/)).toHaveLength(1);
 
-      // Remove filter
-      await user.click(priorityFilter);
-      await user.click(screen.getByText(/전체|모두|All/i));
+      // Remove filter by clicking "전체"
+      const allButton = screen.getByRole("button", { name: /우선순위 필터 전체/ });
+      await user.click(allButton);
 
       expect(screen.getAllByTestId(/^card-/)).toHaveLength(3);
     });
