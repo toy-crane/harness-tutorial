@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { nanoid } from "nanoid";
 
 export type Priority = "상" | "중" | "하";
 export type ColumnId = "todo" | "in-progress" | "done";
@@ -33,13 +35,79 @@ const initialState = {
   },
 };
 
-export const useKanbanStore = create<KanbanState>()((set) => ({
-  ...initialState,
-  addCard: () => "",
-  updateCard: () => {},
-  deleteCard: () => {},
-  moveCard: () => {},
-  reorderCard: () => {},
-  importData: () => {},
-  reset: () => set({ ...structuredClone(initialState) }),
-}));
+export const useKanbanStore = create<KanbanState>()(
+  persist(
+    (set) => ({
+      ...structuredClone(initialState),
+
+      addCard: (title, column) => {
+        const id = nanoid();
+        const card: Card = {
+          id,
+          title,
+          description: "",
+          priority: "중",
+          tags: [],
+          dueDate: "",
+        };
+        set((state) => ({
+          cards: { ...state.cards, [id]: card },
+          columns: {
+            ...state.columns,
+            [column]: [...state.columns[column], id],
+          },
+        }));
+        return id;
+      },
+
+      updateCard: (id, updates) => {
+        set((state) => ({
+          cards: {
+            ...state.cards,
+            [id]: { ...state.cards[id], ...updates },
+          },
+        }));
+      },
+
+      deleteCard: (id, column) => {
+        set((state) => {
+          const { [id]: _, ...remainingCards } = state.cards;
+          return {
+            cards: remainingCards,
+            columns: {
+              ...state.columns,
+              [column]: state.columns[column].filter((cId) => cId !== id),
+            },
+          };
+        });
+      },
+
+      moveCard: (cardId, from, to) => {
+        set((state) => ({
+          columns: {
+            ...state.columns,
+            [from]: state.columns[from].filter((id) => id !== cardId),
+            [to]: [...state.columns[to], cardId],
+          },
+        }));
+      },
+
+      reorderCard: (column, cardId, newIndex) => {
+        set((state) => {
+          const list = state.columns[column].filter((id) => id !== cardId);
+          list.splice(newIndex, 0, cardId);
+          return {
+            columns: { ...state.columns, [column]: list },
+          };
+        });
+      },
+
+      importData: (data) => {
+        set({ cards: data.cards, columns: data.columns });
+      },
+
+      reset: () => set({ ...structuredClone(initialState) }),
+    }),
+    { name: "kanban-storage" }
+  )
+);
