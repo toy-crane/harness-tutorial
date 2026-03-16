@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useKanbanStore } from "@/lib/store";
 import type { Priority } from "@/lib/types";
+import SubtaskList from "./subtask-list";
 
 interface CardDetailModalProps {
   cardId: string;
@@ -139,6 +140,9 @@ export default function CardDetailModal({ cardId, open, onOpenChange }: CardDeta
               </div>
             )}
           </div>
+
+          {/* Subtasks */}
+          <SubtaskList cardId={cardId} subtasks={card.subtasks} />
         </div>
       </DialogContent>
     </Dialog>
