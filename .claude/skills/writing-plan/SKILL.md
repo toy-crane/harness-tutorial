@@ -11,8 +11,8 @@ argument-hint: "feature 이름"
 $ARGUMENTS에서 feature명을 추출한다.
 
 다음 파일이 모두 존재하는지 확인한다:
-- `artifacts/spec.yaml` — 없으면 "먼저 `/spec <feature>`를 실행하세요." 출력 후 종료
-- `artifacts/<feature>/wireframe.html` — 없으면 "먼저 `/wireframe <feature>`를 실행하세요." 출력 후 종료
+- `artifacts/spec.yaml` — 없으면 "먼저 `/writing-spec <feature>`를 실행하세요." 출력 후 종료
+- `artifacts/<feature>/wireframe.html` — 없으면 "먼저 `/sketching-wireframe <feature>`를 실행하세요." 출력 후 종료
 
 ## Step 2: 빈칸 채우기
 

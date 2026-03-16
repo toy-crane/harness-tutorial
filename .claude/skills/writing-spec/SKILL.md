@@ -1,12 +1,12 @@
 ---
-name: spec
-description: 기능의 구조화된 요구사항 문서를 생성합니다. [상황]/[동작] 형식의 시나리오, 성공 기준, 전제 조건, 미결정 사항을 포함합니다. 반복 질문으로 요구사항을 구체화한 뒤 문서를 생성합니다. "/spec", "요구사항 정리", "스펙 작성" 등으로 실행합니다.
+name: writing-spec
+description: 기능의 구조화된 요구사항 문서를 생성합니다. [상황]/[동작] 형식의 시나리오, 성공 기준, 전제 조건, 미결정 사항을 포함합니다. 반복 질문으로 요구사항을 구체화한 뒤 문서를 생성합니다. "/writing-spec", "요구사항 정리", "스펙 작성" 등으로 실행합니다.
 argument-hint: "기능 설명"
 ---
 
 # 요구사항 설계
 
-## 1단계: 반복 질문
+## Step 1: 반복 질문
 
 ### 사전 탐색 (기능 확장 시)
 
@@ -32,9 +32,9 @@ argument-hint: "기능 설명"
 
 - 한 번에 질문 하나. `AskUserQuestion`을 사용하고 2-4개 선택지를 제시한다
 - 기존 시나리오와의 교차점이 있으면 구체적으로 언급하며 질문한다
-- 사용자 흐름에서 더 이상 막히는 곳이 없거나 3회 이상 새로운 발견이 없으면 2단계로 이동한다
+- 사용자 흐름에서 더 이상 막히는 곳이 없거나 3회 이상 새로운 발견이 없으면 Step 2로 이동한다
 
-## 2단계: 문서 생성
+## Step 2: 문서 생성
 
 `references/template.md`를 읽고 그 형식에 맞춰 작성한다.
 
@@ -46,7 +46,7 @@ argument-hint: "기능 설명"
 
 파일명: `artifacts/<feature-name>/spec.md`
 
-## 3단계: spec.yaml 추출
+## Step 3: spec.yaml 추출
 
 spec.md의 시나리오를 `references/spec-schema.yaml` 형식에 맞춰 `artifacts/spec.yaml`에 추출한다.
 
@@ -64,8 +64,10 @@ spec.md의 시나리오를 `references/spec-schema.yaml` 형식에 맞춰 `artif
 - [ ] 동일한 의미의 중복 시나리오가 없는가
 - [ ] examples가 1개 이상인가
 
-## 4단계: 독립 검토
+## Step 4: 독립 검토
 
 spec.yaml 저장 후, `spec-reviewer` 에이전트에 원본(`artifacts/<feature>/spec.md`)과 추출 시나리오(`artifacts/spec.yaml`)를 전달하여 누락 시나리오를 검증한다.
 
-갭이 있으면 사용자에게 보여주고, 반영할 갭을 선택받아 3단계의 추출 규칙·체크리스트를 적용하여 spec.md와 spec.yaml에 추가한다. 기존 시나리오는 수정하지 않는다 (추가만 가능).
+갭이 있으면 사용자에게 보여주고, 반영할 갭을 선택받아 Step 3의 추출 규칙·체크리스트를 적용하여 spec.md와 spec.yaml에 추가한다. 기존 시나리오는 수정하지 않는다 (추가만 가능).
+
+완료 후 `Skill` 도구로 `/sketching-wireframe <feature>`를 실행한다.
