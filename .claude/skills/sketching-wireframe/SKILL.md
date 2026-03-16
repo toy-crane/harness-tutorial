@@ -61,4 +61,4 @@ N개 화면으로 구성합니다:
 
 ## 완료
 
-완료 후 `Skill` 도구로 `/writing-plan <feature>`를 실행한다.
+완료 후 사용자에게 `/writing-plan <feature>` 진행 여부를 물어본다.
