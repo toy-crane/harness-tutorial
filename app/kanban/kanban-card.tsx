@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useKanbanStore, type Card as CardType, type ColumnId, type Priority } from "./store";
+import { TagInput } from "./tag-input";
 
 interface KanbanCardProps {
   card: CardType;
@@ -180,17 +181,7 @@ export function KanbanCard({ card, column, index, isEditing, onEdit, onEditEnd, 
               onChange={(e) => setDueDate(e.target.value)}
             />
           </div>
-          <div>
-            <Label>태그</Label>
-            <div className="flex flex-wrap gap-1">
-              {card.tags.map((tag) => (
-                <Badge key={tag} variant="outline">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-            <Input placeholder="태그 입력" className="mt-1" />
-          </div>
+          <TagInput cardId={card.id} tags={card.tags} />
         </div>
       </CardContent>
     </Card>
