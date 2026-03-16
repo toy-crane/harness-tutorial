@@ -80,9 +80,13 @@ N개 화면으로 구성합니다:
 
 6. 실시간 피드백 루프 (유저가 터미널에 입력할 때까지 자동 반복):
    a. `curl -s http://localhost:3456/api/next-feedback` (블로킹 대기)
-   b. 피드백 JSON 수신 → selector + comment 기반으로 wireframe.html 수정
-   c. `curl -s -X POST http://localhost:3456/api/reload` → 브라우저 자동 리로드
-   d. 6a로 돌아감
+   b. 피드백 JSON 수신 → wireframe.html 수정
+   c. 피드백이 spec.yaml에 새 시나리오 추가가 필요하다고 판단되면:
+      - 추가할 시나리오를 사용자에게 보여주고 `AskUserQuestion`으로 승인 요청
+      - 승인 시 `artifacts/spec.yaml`에 append (기존 시나리오 수정/삭제 금지)
+      - spec-schema.yaml 형식 준수
+   d. `curl -s -X POST http://localhost:3456/api/reload` → 브라우저 자동 리로드
+   e. 6a로 돌아감
    * 유저가 터미널에 새 메시지를 입력하면 blocking curl이 중단되며 루프 종료
 
 ## Step 4: 완료
